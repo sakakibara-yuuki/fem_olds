@@ -1,0 +1,37 @@
+---
+title: fem diagram
+---
+classDiagram
+
+    note for Fem "create Model
+                  create Air_Box
+                  create mesh
+                  calc field"
+
+    Fem --|> Calc
+    Fem --|> Model
+    Model --|> AirBox
+    Model --|> CustomModel
+
+    class Fem{
+        +String beakColor
+        -__init__()
+        +get_model()
+        +calc()
+        -__del__()
+    }
+
+    class Calc{
+        +int sizeInFeet
+        +canEat()
+    }
+
+    class Model{
+        +create_mesh()
+    }
+
+    class AirBox{
+    }
+
+    class CustomModel{
+    }
