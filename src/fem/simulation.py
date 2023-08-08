@@ -11,6 +11,7 @@ from fem.calc import get_edge_node_num
 
 class Fem:
     def __init__(self, model_name: str, param_dict: dict):
+
         gmsh.initialize()
         gmsh.model.add(model_name)
 
@@ -22,9 +23,22 @@ class Fem:
 
     def set_model(self, model):
         # gmsh.model.mesh.setOrder(self.element_order)
-        model.create()
-        model.air_box()
-        gmsh.model.geo.synchronize()
+        model.create_cylinder()
+        model.create_air_box()
+
+        # # まっすぐな翼だけ
+        # model.create_wing()
+
+        # # 少し回転させた翼3Dの形状
+        # model.rotate_wing()
+
+        # # メッシュが荒くなった？
+        # model.set_boundary()
+
+        # # air_boxが生成された
+        # model.create_air_box()
+
+        # gmsh.model.geo.synchronize()
         gmsh.model.mesh.generate(3)
 
     def calc_model(self):
@@ -33,8 +47,8 @@ class Fem:
         )
 
         edge_num, node_num = get_edge_node_num(elements)
-        # K = calc_K(elements, edge_num, node_num, elementType)
-        # C = calc_C(elements, edge_num, node_num, elementType)
+        K = calc_K(elements, edge_num, node_num, elementType)
+        C = calc_C(elements, edge_num, node_num, elementType)
 
     def write_model(self):
         gmsh.write("mesh.msh")

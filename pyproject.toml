@@ -18,12 +18,15 @@ dependencies = [
     "numpy",
     "gmsh",
     "matplotlib",
+    "sphinx",
     "flake8",
     "black",
     "isort",
     "openai",
+    "myst-parser",
     "langchain",
     "google-search-results",
+    "chardet",
 ]
 
 dynamic = ["version"]

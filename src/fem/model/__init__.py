@@ -6,3 +6,4 @@
 # Distributed under terms of the MIT license.
 
 from .model import Model
+from .wing_model import WingModel
