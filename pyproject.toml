@@ -18,11 +18,14 @@ dependencies = [
     "numpy",
     "gmsh",
     "matplotlib",
+    "beautifulsoup4",
+    "deepl",
     "flake8",
     "black",
     "isort",
     "openai",
     "langchain",
+    "chromadb",
     "google-search-results",
 ]
 
