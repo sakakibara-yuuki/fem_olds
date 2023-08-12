@@ -1,0 +1,48 @@
+1.5 What Gmsh is pretty good at …
+Here is a tentative list of what Gmsh does best:
+
+
+ quickly describe simple and/or “repetitive” geometries with the
+built-in scripting language, thanks to user-defined macros, loops,
+conditionals and includes (see User-defined macros, Loops and conditionals, and Other general commands). For more advanced
+geometries, using the Gmsh API (see Gmsh application programming interface) in the language of your choice (C++, C, Python, Julia or
+Fortran) brings even greater flexibility, the only downside being that
+you need to either compile your code (for C++, C and Fortran) or to
+configure and install an interpreter (Python or Julia) in addition to
+Gmsh. A binary Software Development Kit (SDK) is distributed on the Gmsh
+web site to make the process easier (see Installing and running Gmsh on your computer);
+ parametrize these geometries. Gmsh’s scripting language or the Gmsh API
+enable all commands and command arguments to depend on previous
+calculations. Using the OpenCASCADE geometry kernel, Gmsh gives access
+to all the usual constructive solid geometry operations (see
+e.g. t16);
+ import geometries from other CAD software in standard exchange
+formats. Gmsh uses OpenCASCADE to import such files, including label and
+color information from STEP and IGES files (see e.g. t20);
+ generate unstructured 1D, 2D and 3D simplicial (i.e., using line
+segments, triangles and tetrahedra) finite element meshes (see Mesh module), with fine control over the element size (see Specifying mesh element sizes);
+ create simple extruded geometries and meshes, and allow to automatically
+couple such structured meshes with unstructured ones (using a layer of
+pyramids in 3D);
+ generate high-order (curved) meshes that conform to the CAD model
+geometry. High-order mesh optimization tools allow to guarantee the
+validity of such curved meshes;
+ interact with external solvers by defining ONELAB parameters, shared
+between Gmsh and the solvers and easily modifiable in the GUI
+(see Solver module);
+ visualize and export computational results in a great variety of
+ways. Gmsh can display scalar, vector and tensor datasets, perform
+various operations on the resulting post-processing views
+(see Post-processing module), can export plots in many different
+formats, and can generate complex animations (see e.g. t8);
+ run on low end machines and/or machines with no graphical
+interface. Gmsh can be compiled with or without the GUI
+(see Compiling the source code), and all versions can be used either
+interactively or directly from the command line;
+ configure your preferred options. Gmsh has a large number of
+configuration options that can be set interactively using the GUI,
+scattered inside script files, changed through the API, set in per-user
+configuration files and specified on the command line (see Gmsh options);
+ and do all the above on various platforms (Windows, macOS and Linux),
+for free (see Copying conditions)!
+

@@ -160,8 +160,6 @@ cython_debug/
 #.idea/
 .*
 
-# ai
+
+docs/assistant/static/
 ai
-ai/ai.py
-prompt
-docs
