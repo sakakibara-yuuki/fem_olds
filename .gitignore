@@ -160,4 +160,5 @@ cython_debug/
 #.idea/
 .*
 
+docs/assistant/static/
 ai
