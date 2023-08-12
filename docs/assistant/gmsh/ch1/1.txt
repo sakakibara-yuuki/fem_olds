@@ -1,0 +1,79 @@
+1.1 Geometry module
+A model in Gmsh is defined using its Boundary Representation (BRep): a
+volume is bounded by a set of surfaces, a surface is bounded by a series
+of curves, and a curve is bounded by two end points. Model entities are
+topological entities, i.e., they only deal with adjacencies in the
+model, and are implemented as a set of abstract topological
+classes. This BRep is extended by the definition of embedded, or
+internal, model entities: internal points, curves and surfaces can be
+embedded in volumes; and internal points and curves can be embedded in
+surfaces.
+
+The geometry of model entities can be provided by different CAD
+kernels. The two default kernels interfaced by Gmsh are the
+built-in kernel and the OpenCASCADE kernel. Gmsh does not
+translate the geometrical representation from one kernel to another, or
+from these kernels to some neutral representation. Instead, Gmsh
+directly queries the native data for each CAD kernel, which avoids data
+loss and is crucial for complex models where translations invariably
+introduce issues linked to slightly different representations. Selecting
+the CAD kernel in .geo scripts is done with the SetFactory
+command (see Geometry scripting commands), while in the Gmsh API the
+kernel appears explicitly in all the relevant functions from the
+gmsh/model namespace, with geo or occ prefixes for
+the built-in and OpenCASCADE kernel, respectively (see Namespace gmsh/model).
+
+Entities can either be built in a bottom-up manner (first points,
+then curves, surfaces and volumes) with the built-in and OpenCASCADE
+kernels, or in a top-down constructive solid geometry fashion
+(solids on which boolean operations are performed) with the OpenCASCADE
+kernel. Both methodologies can also be combined. Finally, groups of
+model entities (called “physical groups”) can be defined, based on the
+elementary geometric entities. (See Elementary entities vs physical groups, for more information about how physical groups affect the way
+meshes are saved.)
+
+Both model entities (also referred to as “elementary entities”) and
+physical groups are uniquely defined by a pair of integers: their
+dimension (0 for points, 1 for curves, 2 for surfaces, 3 for volumes)
+and their tag, a strictly positive global identification
+number. Entity and group tags are unique per dimension:
+
+ each point must possess a unique tag;
+ each curve must possess a unique tag;
+ each surface must possess a unique tag;
+ each volume must possess a unique tag.
+
+Zero or negative tags are reserved by Gmsh for internal use.
+
+Model entities can be manipulated and transformed in a variety of ways
+within the geometry module, but operations are always performed directly
+within their respective CAD kernels. As explained above, there is no
+common internal geometrical representation: rather, Gmsh directly
+performs the operations (translation, rotation, intersection, union,
+fragments, ...) on the native geometrical representation using each CAD
+kernel’s own API.  In the same philosophy, models can be imported in the
+geometry module through each CAD kernel’s own import mechanisms. For
+example, by default Gmsh imports STEP and IGES files through
+OpenCASCADE, which will lead to the creation of model entities with an
+internal OpenCASCADE representation.
+
+The Gmsh tutorial, starting with t1, is the best place to
+learn how to use the geometry module: it contains examples of increasing
+complexity based on both the built-in and the OpenCASCADE kernel.  Note
+that many features of the geometry module can be used interactively in
+the GUI (see Gmsh graphical user interface), which is also a good
+way to learn about both Gmsh’s scripting language and the API, as
+actions in the geometry module automatically append the related command
+in the input script file, and can optionally also generate input for the
+languages supported by the API (see the
+General.ScriptingLanguages option; this is still work-in-progress
+as of Gmsh 4.11.)
+
+In addition to CAD-type geometrical entities, whose geometry is provided
+by a CAD kernel, Gmsh also supports discrete model entities,
+which are defined by a mesh (e.g. STL). Gmsh does not perform
+geometrical operations on such discrete entities, but they can be
+equipped with a geometry through a so-called “reparametrization”
+procedure1. The parametrization is then
+used for meshing, in exactly the same way as for CAD entities. See
+t13 for an example.

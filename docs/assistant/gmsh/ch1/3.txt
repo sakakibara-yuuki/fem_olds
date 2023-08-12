@@ -1,0 +1,34 @@
+1.3 Solver module
+Gmsh implements a ONELAB (http://onelab.info) server to exchange
+data with external solvers or other codes (called “clients”). The
+ONELAB interface allows to call such clients and have them share
+parameters and modeling information.
+
+The implementation is based on a client-server model, with a server-side
+database and local or remote clients communicating in-memory or through
+TCP/IP sockets. Contrary to most solver interfaces, the ONELAB server
+has no a priori knowledge about any specifics (input file format,
+syntax, ...) of the clients. This is made possible by having any
+simulation preceded by an analysis phase, during which the clients are
+asked to upload their parameter set to the server. The issues of
+completeness and consistency of the parameter sets are completely dealt
+with on the client side: the role of ONELAB is limited to data
+centralization, modification and re-dispatching.
+
+Using the Gmsh API, you can directly embed Gmsh in your C++, C, Python,
+Julia or Fortran solver, use ONELAB for interactive parameter definition
+and modification, and to create post-processing data on the fly. See
+prepro.py,
+custom_gui.py and
+custom_gui.cpp
+for examples.
+
+If you prefer to keep codes separate, you can also communicate with Gmsh
+through a socket by providing the solver name (Solver.Name0,
+Solver.Name1, etc.) and the path to the executable
+(Solver.Executable0, Solver.Executable1, etc.). Parameters
+can then be exchanged using the ONELAB protocol: see the
+utils/solvers directory for
+examples. A full-featured solver interfaced in this manner is GetDP
+(https://getdp.info), a general finite element solver using mixed
+finite elements.

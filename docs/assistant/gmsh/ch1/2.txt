@@ -1,0 +1,243 @@
+1.2 Mesh module
+A finite element mesh of a model is a tessellation of its geometry by
+simple geometrical elements of various shapes (in Gmsh: lines,
+triangles, quadrangles, tetrahedra, prisms, hexahedra and pyramids),
+arranged in such a way that if two of them intersect, they do so along a
+face, an edge or a node, and never otherwise. This defines a so-called
+conformal mesh. The mesh module implements several algorithms to
+generate such meshes automatically. By default, meshes produced by Gmsh
+are considered as unstructured, even if they were generated in a
+structured way (e.g., by extrusion). This implies that the mesh
+elements are completely defined simply by an ordered list of their
+nodes, and that no predefined ordering relation is assumed between any
+two elements.
+
+In order to guarantee the conformity of the mesh, mesh generation is
+performed in a bottom-up flow: curves are discretized first; the mesh of
+the curves is then used to mesh the surfaces; then the mesh of the
+surfaces is used to mesh the volumes. In this process, the mesh of an
+entity is only constrained by the mesh of its boundary, unless entities
+of lower dimensions are explicitly embedded in entities of higher
+dimension. For example, in three dimensions, the triangles discretizing
+a surface will be forced to be faces of tetrahedra in the final 3D mesh
+only if the surface is part of the boundary of a volume, or if that
+surface has been explicitly embedded in the volume. This automatically
+ensures the conformity of the mesh when, for example, two volumes share
+a common surface. Every meshing step is constrained by a mesh size
+field, which prescribes the desired size of the elements in the
+mesh. This size field can be uniform, specified by values associated
+with points in the geometry, or defined by general mesh size fields (for
+example related to the distance to some boundary, to a arbitrary scalar
+field defined on another mesh, etc.): see Gmsh mesh size fields. For each meshing step, all structured mesh directives are
+executed first, and serve as additional constraints for the unstructured
+parts. (The generation and handling of conformal meshes has important
+consequences on how meshes are stored internally in Gmsh, and how they
+are accessed through the API: see Gmsh application programming interface.)
+
+Gmsh’s mesh module regroups several 1D, 2D and 3D meshing algorithms:
+
+
+ The 2D unstructured algorithms generate triangles and/or
+quadrangles (when recombination commands or options are used). The 3D
+unstructured algorithms generate tetrahedra, or tetrahedra and
+pyramids (when the boundary mesh contains quadrangles).
+ The 2D structured algorithms (transfinite and extrusion) generate
+triangles by default, but quadrangles can be obtained by using the
+recombination commands or options. The 3D structured algorithms
+generate tetrahedra, hexahedra, prisms and pyramids, depending on the
+type of the surface meshes they are based on.
+
+All meshes can be subdivided to generate fully quadrangular or fully
+hexahedral meshes with the Mesh.SubdivisionAlgorithm option
+(see Mesh options).
+
+
+• Choosing the right unstructured algorithm  
+
+• Specifying mesh element sizes  
+
+• Elementary entities vs physical groups  
+
+
+
+
+
+Next: Specifying mesh element sizes, Previous: Mesh module, Up: Mesh module   [Contents][Index]
+
+1.2.1 Choosing the right unstructured algorithm
+Gmsh provides a choice between several 2D and 3D unstructured
+algorithms. Each algorithm has its own advantages and disadvantages.
+
+For all 2D unstructured algorithms a Delaunay mesh that contains all the
+points of the 1D mesh is initially constructed using a
+divide-and-conquer algorithm2. Missing
+edges are recovered using edge swaps3. After this initial step several algorithms can be
+applied to generate the final mesh:
+
+
+ The “MeshAdapt” algorithm4 is based
+on local mesh modifications. This technique makes use of edge swaps,
+splits, and collapses: long edges are split, short edges are collapsed,
+and edges are swapped if a better geometrical configuration is obtained.
+ The “Delaunay” algorithm is inspired by the work of the GAMMA team at
+INRIA5. New points are inserted sequentially at the circumcenter
+of the element that has the largest adimensional circumradius. The mesh
+is then reconnected using an anisotropic Delaunay criterion.
+ The “Frontal-Delaunay” algorithm is inspired by the work of
+S. Rebay6.
+ Other experimental algorithms with specific features are also
+available. In particular, “Frontal-Delaunay for
+Quads”7 is a
+variant of the “Frontal-Delaunay” algorithm aiming at generating
+right-angle triangles suitable for recombination; and
+“BAMG”8 allows to generate
+anisotropic triangulations.
+
+For very complex curved surfaces the “MeshAdapt” algorithm is the most
+robust. When high element quality is important, the “Frontal-Delaunay”
+algorithm should be tried. For very large meshes of plane surfaces the
+“Delaunay” algorithm is the fastest; it usually also handles complex
+mesh size fields better than the “Frontal-Delaunay”.  When the
+“Delaunay” or “Frontal-Delaunay” algorithms fail, “MeshAdapt” is
+automatically triggered. The “Automatic” algorithm uses “Delaunay”
+for plane surfaces and “MeshAdapt” for all other surfaces.
+
+Several 3D unstructured algorithms are also available:
+
+
+ The “Delaunay” algorithm is split into three separate steps. First, an
+initial mesh of the union of all the volumes in the model is performed,
+without inserting points in the volume. The surface mesh is then
+recovered using H. Si’s boundary recovery algorithm Tetgen/BR. Then a
+three-dimensional version of the 2D Delaunay algorithm described above
+is applied to insert points in the volume to respect the mesh size
+constraints.
+ The “Frontal” algorithm uses J. Schoeberl’s Netgen algorithm
+9.
+ The “HXT” algorithm10
+is a new efficient and parallel reimplementaton of the Delaunay
+algorithm.
+ Other experimental algorithms with specific features are also available.
+In particular, “MMG3D”11  allows to generate anisotropic
+tetrahedralizations.
+
+The “Delaunay” algorithm is currently the most robust and is the only
+one that supports the automatic generation of hybrid meshes with
+pyramids. Embedded model entities and general mesh size fields
+(see Specifying mesh element sizes) are currently only supported by
+the “Delaunay” and “HXT” algorithms.
+
+When Gmsh is configured with OpenMP support (see Compiling the source code), most of the meshing steps can be performed in parallel:
+
+ 1D and 2D meshing is parallelized using a coarse-grained approach,
+i.e. curves (resp. surfaces) are each meshed sequentially, but several
+curves (resp. surfaces) can be meshed at the same time.
+ 3D meshing using HXT is parallelized using a fine-grained approach,
+i.e. the actual meshing procedure for a single volume is done is
+parallel.
+
+The number of threads can be controlled with the -nt flag on the
+command line (see Gmsh command-line interface), or with the
+General.NumThreads, Mesh.MaxNumThreads1D,
+Mesh.MaxNumThreads2D and Mesh.MaxNumThreads3D options (see
+General options and Mesh options).
+
+
+
+
+Next: Elementary entities vs physical groups, Previous: Choosing the right unstructured algorithm, Up: Mesh module   [Contents][Index]
+
+1.2.2 Specifying mesh element sizes
+
+
+
+
+
+There are several ways to specify the size of the mesh elements for a
+given geometry:
+
+
+ First, if the options Mesh.MeshSizeFromPoints and
+Mesh.MeshSizeExtendFromBoundary are set (they are by default; see
+Mesh options), you can simply specify desired mesh element sizes
+at the geometrical points of the model. The size of the mesh elements
+will then be computed by interpolating these values inside the domain
+during mesh generation. This might sometimes lead to over-refinement in
+some areas, so that you may have to add “dummy” geometrical entities
+in the model in order to get the desired element sizes or use more
+advanced methods explained below.
+ Second, if Mesh.MeshSizeFromCurvature is set to a positive value
+(it is set to 0 by default), the mesh will be adapted with respect to
+the curvature of the model entities, the value giving the target number
+of elements per 2 Pi radians.
+ Next, you can specify a general target mesh size, expressed as a
+combination of mesh size fields (see Gmsh mesh size fields):
+
+ The Box field specifies the size of the elements inside and
+outside of a parallelepipedic region.
+ The Distance field specifies the size of the mesh according to
+the distance to some model entities.
+ The MathEval field specifies the size of the mesh using an
+explicit mathematical function.
+ The PostView field specifies an explicit background mesh in the
+form of a scalar post-processing view (see Post-processing module,
+and Gmsh file formats) in which the nodal values are the target
+element sizes.  This method is very general but it requires a first
+(usually rough) mesh and a way to compute the target sizes on this mesh
+(usually through an error estimation procedure, e.g. in an iterative
+process of mesh adaptation).
+ The Min field specifies the size as the minimum of the sizes
+computed using other fields.
+ …
+
+ Mesh sizes are also constrained by structured meshing constraints
+(e.g. transfinite or extruded meshes) as well as by any discrete model
+entity that is not equipped with a geometry, and which will thus
+preserve it mesh during mesh generation.
+ Boundary mesh sizes are interpolated inside surfaces and/or volumes
+depending on the value of Mesh.MeshSizeExtendFromBoundary.
+
+To determine the actual mesh size at any given point in the model, Gmsh
+evaluates all the above mesh size constraints and selects the smallest
+value. Using the Gmsh API, this value can then be further modified using
+a C++, C, Python, Julia or Fortran mesh size callback function provided
+via gmsh/model/mesh/setSizeCallback (see Namespace gmsh/model/mesh).
+
+The resulting value is further constrained in the interval [
+Mesh.MeshSizeMin, Mesh.MeshSizeMax ] (which can also be
+provided on the command line with -clmin and -clmax). The
+resulting value is then finally multiplied by Mesh.MeshSizeFactor
+(-clscale on the command line).
+
+Note that when the element size is fully specified by a mesh size field,
+it is thus often desirable to set
+
+Mesh.MeshSizeFromPoints = 0;
+Mesh.MeshSizeFromCurvature = 0;
+Mesh.MeshSizeExtendFromBoundary = 0;
+
+to prevent over-refinement inside an entity due to small mesh sizes on
+its boundary.
+
+
+
+
+Previous: Specifying mesh element sizes, Up: Mesh module   [Contents][Index]
+
+1.2.3 Elementary entities vs. physical groups
+It is usually convenient to combine elementary geometrical entities into
+more meaningful groups, e.g. to define some mathematical (“domain”,
+“boundary with Neumann condition”), functional (“left wing”,
+“fuselage”) or material (“steel”, “carbon”) properties.  Such
+grouping is done in Gmsh’s geometry module (see Geometry module)
+through the definition of “physical groups”.
+
+By default in the native Gmsh MSH mesh file format (see Gmsh file formats), as well as in most other mesh formats, if physical groups are
+defined, the output mesh only contains those elements that belong to at
+least one physical group. (Different mesh file formats treat physical
+groups in slightly different ways, depending on their capability to
+define groups.) To save all mesh elements whether or not physical groups
+are defined, use the Mesh.SaveAll option (see Mesh options)
+or specify -save_all on the command line. In some formats
+(e.g. MSH2), setting Mesh.SaveAll will however discard all
+physical group definitions.

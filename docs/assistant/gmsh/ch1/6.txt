@@ -1,0 +1,14 @@
+1.6 … and what Gmsh is not so good at
+Here are some known weaknesses of Gmsh:
+
+
+ Gmsh is not a multi-bloc mesh generator: all meshes produced by Gmsh are
+conforming in the sense of finite element meshes;
+ Gmsh’s graphical user interface is only exposing a limited number of the
+available features, and many aspects of the interface could be enhanced
+(especially manipulators).
+ Your complaints about Gmsh here :-)
+
+If you have the skills and some free time, feel free to join the
+project: we gladly accept any code contributions (see Information for developers) to remedy the aforementioned (and all other) shortcomings!
+

@@ -1,0 +1,35 @@
+1 Overview of Gmsh
+
+
+Gmsh is a three-dimensional finite element mesh generator with a
+build-in CAD engine and post-processor. Its design goal is to provide a
+fast, light and user-friendly meshing tool with parametric input and
+flexible visualization capabilities.
+
+Gmsh is built around four modules (geometry, mesh, solver and
+post-processing), which can be controlled with the graphical user
+interface (GUI; see Gmsh graphical user interface), from the
+command line (see Gmsh command-line interface), using text files
+written in Gmsh’s own scripting language (.geo files; see
+Gmsh scripting language), or through the C++, C, Python, Julia and
+Fortran application programming interface (API; see Gmsh application programming interface).
+
+A brief description of the four modules is given hereafter, before an
+overview of what Gmsh does best (... and what it is not so good at), and
+some practical information on how to install and run Gmsh on your
+computer.
+
+
+• Geometry module  
+
+• Mesh module  
+
+• Solver module  
+
+• Post-processing module  
+
+• What Gmsh is pretty good at  
+
+• and what Gmsh is not so good at  
+
+• Installing and running Gmsh on your computer  

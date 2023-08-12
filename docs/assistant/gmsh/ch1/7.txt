@@ -1,0 +1,31 @@
+1.7 Installing and running Gmsh on your computer
+
+
+Gmsh can be used either as a standalone application, or as a library.
+
+As a standalone application, Gmsh can be controlled with the GUI
+(see Gmsh graphical user interface), through the command line
+(see Gmsh command-line interface) and through .geo script
+files (see Gmsh scripting language). In addition, the ONELAB
+interface (see Solver module) allows to interact with the Gmsh
+application through Unix or TCP/IP sockets.  Binary versions of the Gmsh
+app for Windows, Linux and macOS can be downloaded from
+https://gmsh.info/#Download. Several Linux distributions also ship
+the Gmsh app. See Compiling the source code for instructions on
+how to compile the Gmsh app from source.
+
+As a library, Gmsh can still be used in the same way as the standalone
+Gmsh app, but in addition it can also be embedded in external codes
+using the Gmsh API (see Gmsh application programming interface).
+The API is available in C++, C, Python, Julia and Fortran.  A binary
+Software Development Kit (SDK) for Windows, Linux and macOS, that
+contains the dynamic Gmsh library and the associated header and module
+files, can be downloaded from https://gmsh.info/#Download. Python
+users can use
+
+pip install --upgrade gmsh
+
+which will download the binary SDK and install the files in the
+appropriate system directories. Several Linux distributions also ship
+the Gmsh SDK. See Compiling the source code for instructions on
+how to compile the dynamic Gmsh library from source.

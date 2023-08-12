@@ -1,0 +1,47 @@
+1.4 Post-processing module
+The post-processing module can handle multiple scalar, vector or tensor
+datasets along with the geometry and the mesh. The datasets can be given
+in several formats: in human-readable “parsed” format (these are just
+part of a standard input script, but are usually put in separate files
+with a .pos extension – see Post-processing scripting commands), in native MSH files (ASCII or binary files with .msh
+extensions: see Gmsh file formats), or in standard third-party
+formats such as CGNS or MED. Datasets can also be directly imported
+using the Gmsh API (see Namespace gmsh/view).
+
+Once loaded into Gmsh, scalar fields can be displayed as iso-curves,
+iso-surfaces or color maps, whereas vector fields can be represented
+either by three-dimensional arrows or by displacement maps. Tensor
+fields can be displayed as Von-Mises effective stresses, min/max
+eigenvalues, eigenvectors, ellipses or ellipsoids. (To display other
+combinations of components, you can use the
+View.ForceNumComponents option – see Post-processing options.)
+
+Each dataset, along with the visualization options, is called a
+“post-processing view”, or simply a “view”. Each view is given a
+name, and can be manipulated either individually (each view has its own
+button in the GUI and can be referred to by its index or its unique tag
+in a script or in the API) or globally (see the
+PostProcessing.Link option in Post-processing options).
+Possible operations on post-processing views include section
+computation, offset, elevation, boundary and component extraction, color
+map and range modification, animation, vector graphic output, etc.
+These operations are either carried out nondestructively through the
+modification of post-processing options, or can lead to the actual
+modification of the view data or the creation of new views when done
+using post-processing plugins (see Gmsh plugins). Both can be fully
+automated in scripts or through the API (see e.g., t8, and
+t9).
+
+By default, Gmsh treats all post-processing views as three-dimensional
+plots, i.e., draws the scalar, vector and tensor primitives (points,
+curves, triangles, tetrahedra, etc.) in 3D space. But Gmsh can also
+represent each post-processing view containing scalar points as
+two-dimensional (“X-Y”) plots, either space- or time-oriented:
+
+ in a ‘2D space’ plot, the scalar points are taken in the same order as they
+are defined in the post-processing view: the abscissa of the 2D graph is
+the curvilinear abscissa of the curve defined by the point series, and only
+one curve is drawn using the values associated with the points. If several
+time steps are available, each time step generates a new curve;
+ in a ‘2D time’ plot, one curve is drawn for each scalar point in the
+view and the abscissa is the time step.
